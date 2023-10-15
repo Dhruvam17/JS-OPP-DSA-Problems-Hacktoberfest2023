@@ -1,0 +1,39 @@
+//Leetcode question link: https://leetcode.com/problems/number-of-ways-to-stay-in-the-same-place-after-some-steps/description/?envType=daily-question&envId=2023-10-15
+
+class Solution {
+public:
+    int numWays(int steps, int arrLen) {
+        // Define variables to store the number of steps and the maximum possible position (n)
+        int m = steps;
+        int n = min(steps / 2 + 1, arrLen);
+        
+        // Create a 2D vector to store dynamic programming results
+        vector<vector<int>> dp(m + 1, vector<int>(n, 0));
+        
+        // Initialize the starting point as 1 way (the pointer is at index 0)
+        dp[0][0] = 1;
+        
+        int mod = 1000000007; // Define the modulo constant
+
+        // Loop through all steps
+        for (int i = 1; i <= m; i++) {
+            for (int j = 0; j < n; j++) {
+                // The pointer stays in the same place
+                dp[i][j] = dp[i - 1][j];
+
+                // The pointer moves to the left (if possible)
+                if (j > 0) {
+                    dp[i][j] = (dp[i][j] + dp[i - 1][j - 1]) % mod;
+                }
+
+                // The pointer moves to the right (if possible)
+                if (j < n - 1) {
+                    dp[i][j] = (dp[i][j] + dp[i - 1][j + 1]) % mod;
+                }
+            }
+        }
+        
+        // Return the result, which represents the number of ways to stay at index 0 after 'steps' steps
+        return dp[m][0];
+    }
+};
